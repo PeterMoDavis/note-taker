@@ -43,6 +43,20 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
   const newNote = req.body;
   console.log(newNote);
+  fs.readFile("./db/db.json", "utf8", (err, data) => {
+    if (err) {
+      throw err;
+    }
+    var json = JSON.parse(data);
+    json.push(newNote);
+    console.log(json);
+    fs.writeFile("./db/db.json", JSON.stringify(json), (err, result) => {
+      if (err) {
+        throw err;
+      }
+    });
+  });
+  res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
