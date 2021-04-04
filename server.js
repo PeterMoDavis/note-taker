@@ -1,8 +1,3 @@
-// THEN I am presented with a page with existing notes listed in the left-hand column, plus empty fields to enter a new note title and the note’s text in the right-hand column
-// WHEN I enter a new note title and the note’s text
-// THEN a Save icon appears in the navigation at the top of the page
-// WHEN I click on the Save icon
-// THEN the new note I have entered is saved and appears in the left-hand column with the other existing notes
 // WHEN I click on an existing note in the list in the left-hand column
 // THEN that note appears in the right-hand column
 // WHEN I click on the Write icon in the navigation at the top of the page
@@ -11,6 +6,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const uniqid = require("uniqid");
 
 // Sets up the Express App
 
@@ -42,6 +38,7 @@ app.get("/api/notes", (req, res) => {
 
 app.post("/api/notes", (req, res) => {
   const newNote = req.body;
+  newNote.id = uniqid();
   console.log(newNote);
   fs.readFile("./db/db.json", "utf8", (err, data) => {
     if (err) {
@@ -49,7 +46,10 @@ app.post("/api/notes", (req, res) => {
     }
     var json = JSON.parse(data);
     json.push(newNote);
-    console.log(json);
+    json.forEach((note) => {
+      console.log(note);
+      console.log(uniqid());
+    });
     fs.writeFile("./db/db.json", JSON.stringify(json), (err, result) => {
       if (err) {
         throw err;
