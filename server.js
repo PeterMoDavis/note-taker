@@ -59,4 +59,26 @@ app.post("/api/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
+app.delete("/api/notes/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  fs.readFile("./db/db.json", "utf8", (err, data) => {
+    if (err) {
+      throw err;
+    }
+    var json = JSON.parse(data);
+    console.log(json);
+    let newArr = json.filter((note) => {
+      return note.id !== id;
+    });
+    console.log(newArr);
+    fs.writeFile("./db/db.json", JSON.stringify(newArr), (err, results) => {
+      if (err) {
+        throw err;
+      }
+    });
+  });
+  res.sendFile(path.join(__dirname, "public/notes.html"));
+});
+
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
